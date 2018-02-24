@@ -54,7 +54,7 @@ public class IKSetting : MonoBehaviour
             float[] z = axis[1].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
             for (int i = 0; i < 17; i++)
             {
-                points[i] = new Vector3(x[i], y[i], -z[i]);
+                points[i] = new Vector3(-x[i], y[i], -z[i]);
             }
 
             for (int i = 0; i < 12; i++)
@@ -86,7 +86,7 @@ public class IKSetting : MonoBehaviour
     {
         if (Math.Abs(points[0].x) < 1000 && Math.Abs(points[0].y) < 1000 && Math.Abs(points[0].z) < 1000)
         {
-            BoneList[0].position = points[0] * 0.001f + Vector3.up * 0.8f;
+            BoneList[0].position = Vector3.Lerp(BoneList[0].position, points[0] * 0.001f + Vector3.up * 0.8f, 0.1f);
             FullbodyIK.transform.position = Vector3.Lerp(FullbodyIK.transform.position, points[0] * 0.001f, 0.01f);
             Vector3 hipRot = (NormalizeBone[0] + NormalizeBone[2] + NormalizeBone[4]).normalized;
             //BoneList[0].right = Vector3.Lerp(BoneList[0].right, new Vector3(hipRot.x, 0, hipRot.z), 0.1f);
@@ -122,11 +122,13 @@ public class IKSetting : MonoBehaviour
 enum OpenPoseRef
 {
     Hips,
-    LeftKnee, LeftFoot,
+
     RightKnee, RightFoot,
+    LeftKnee, LeftFoot,
     Neck, Head,
+
+    LeftArm, LeftElbow, LeftWrist,
     RightArm, RightElbow, RightWrist,
-    LeftArm, LeftElbow, LeftWrist
 };
 enum NormalizeBoneRef
 {
