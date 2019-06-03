@@ -9,6 +9,7 @@ public class BoneController : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField, Range(10, 120)] float FrameRate;
     [SerializeField] GameObject BoneRoot;
+    [SerializeField] string Data_Path;
     public List<Transform> BoneList = new List<Transform>();
     Vector3[] points = new Vector3[17];
     Vector3[] DefaultNormalizeBone = new Vector3[12];
@@ -92,20 +93,27 @@ public class BoneController : MonoBehaviour
     {
         if (NowFrame < 600)
         {
-            StreamReader fi = new StreamReader(Application.dataPath + "/datas/" + "3d_data" + NowFrame.ToString() + ".txt");
+            StreamReader fi = new StreamReader(Application.dataPath + Data_Path + NowFrame.ToString() + ".txt");
             NowFrame++;
             string all = fi.ReadToEnd();
-            string[] axis = all.Split(']');
-            float[] x = axis[0].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
-            float[] y = axis[2].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
-            float[] z = axis[1].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
-            for (int i = 0; i < 17; i++)
+            if (all != "0")
             {
-                points[i] = new Vector3(x[i], y[i], -z[i]);
+                string[] axis = all.Split(']');
+                float[] x = axis[0].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
+                float[] y = axis[2].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
+                float[] z = axis[1].Replace("[", "").Replace(Environment.NewLine, "").Split(' ').Where(s => s != "").Select(f => float.Parse(f)).ToArray();
+                for (int i = 0; i < 17; i++)
+                {
+                    points[i] = new Vector3(x[i], y[i], -z[i]);
+                }
+                for (int i = 0; i < 12; i++)
+                {
+                    NormalizeBone[i] = (points[BoneJoint[i, 1]] - points[BoneJoint[i, 0]]).normalized;
+                }
             }
-            for (int i = 0; i < 12; i++)
+            else
             {
-                NormalizeBone[i] = (points[BoneJoint[i, 1]] - points[BoneJoint[i, 0]]).normalized;
+                Debug.Log("No data");
             }
         }
     }
@@ -127,7 +135,7 @@ public class BoneController : MonoBehaviour
     {
         for (int i = 0; i < 12; i++)
         {
-            LerpedNormalizeBone[i] = Vector3.Lerp(LerpedNormalizeBone[i], NormalizeBone[i], 0.1f);
+            LerpedNormalizeBone[i] = Vector3.Slerp(LerpedNormalizeBone[i], NormalizeBone[i], 0.1f);
         }
         if (Math.Abs(points[0].x) < 1000 && Math.Abs(points[0].y) < 1000 && Math.Abs(points[0].z) < 1000)
         {
