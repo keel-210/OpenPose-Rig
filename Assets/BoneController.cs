@@ -1,15 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 public class BoneController : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField, Range(10, 120)] float FrameRate;
     [SerializeField] GameObject BoneRoot;
     [SerializeField] string Data_Path;
+    [SerializeField] string File_Name;
+    [SerializeField] int Data_Size;
     public List<Transform> BoneList = new List<Transform>();
     Vector3[] points = new Vector3[17];
     Vector3[] DefaultNormalizeBone = new Vector3[12];
@@ -22,15 +24,13 @@ public class BoneController : MonoBehaviour
     Vector3[] DefaultYAxis = new Vector3[17];
     Vector3[] DefaultZAxis = new Vector3[17];
 
-
     float Timer;
-    int[,] joints = new int[,] { { 0, 1 }, { 1, 2 }, { 2, 3 }, { 0, 4 }, { 4, 5 },
-                                 { 5, 6 }, { 0, 7 }, { 7, 8 }, { 8, 9 }, { 9, 10},
-                                 { 8, 11 }, { 11, 12 }, { 12, 13 }, { 8, 14 }, { 14, 15 },
-                                 { 15, 16 } };
-    int[,] BoneJoint = new int[,] { { 0, 2 }, { 2, 3 }, { 0, 5 }, { 5, 6 }, { 0, 7 },
-                                    { 7, 8 }, { 8, 9 }, { 9, 10 }, { 9, 12 }, { 12, 13 },
-                                    { 9, 15 }, { 15, 16 } };
+    int[, ] joints = new int[, ]
+    { { 0, 1 }, { 1, 2 }, { 2, 3 }, { 0, 4 }, { 4, 5 }, { 5, 6 }, { 0, 7 }, { 7, 8 }, { 8, 9 }, { 9, 10 }, { 8, 11 }, { 11, 12 }, { 12, 13 }, { 8, 14 }, { 14, 15 }, { 15, 16 }
+    };
+    int[, ] BoneJoint = new int[, ]
+    { { 0, 2 }, { 2, 3 }, { 0, 5 }, { 5, 6 }, { 0, 7 }, { 7, 8 }, { 8, 9 }, { 9, 10 }, { 9, 12 }, { 12, 13 }, { 9, 15 }, { 15, 16 }
+    };
     int NowFrame = 0;
     void Start()
     {
@@ -69,20 +69,20 @@ public class BoneController : MonoBehaviour
             DefaultBoneRot[i] = BoneList[i].rotation;
             DefaultBoneLocalRot[i] = BoneList[i].localRotation;
             DefaultXAxis[i] = new Vector3(
-                    Vector3.Dot(BoneList[i].right, rootT.right),
-                    Vector3.Dot(BoneList[i].up, rootT.right),
-                    Vector3.Dot(BoneList[i].forward, rootT.right)
-                    );
+                Vector3.Dot(BoneList[i].right, rootT.right),
+                Vector3.Dot(BoneList[i].up, rootT.right),
+                Vector3.Dot(BoneList[i].forward, rootT.right)
+            );
             DefaultYAxis[i] = new Vector3(
-                    Vector3.Dot(BoneList[i].right, rootT.up),
-                    Vector3.Dot(BoneList[i].up, rootT.up),
-                    Vector3.Dot(BoneList[i].forward, rootT.up)
-                    );
+                Vector3.Dot(BoneList[i].right, rootT.up),
+                Vector3.Dot(BoneList[i].up, rootT.up),
+                Vector3.Dot(BoneList[i].forward, rootT.up)
+            );
             DefaultZAxis[i] = new Vector3(
-                    Vector3.Dot(BoneList[i].right, rootT.forward),
-                    Vector3.Dot(BoneList[i].up, rootT.forward),
-                    Vector3.Dot(BoneList[i].forward, rootT.forward)
-                    );
+                Vector3.Dot(BoneList[i].right, rootT.forward),
+                Vector3.Dot(BoneList[i].up, rootT.forward),
+                Vector3.Dot(BoneList[i].forward, rootT.forward)
+            );
         }
         for (int i = 0; i < 12; i++)
         {
@@ -91,9 +91,9 @@ public class BoneController : MonoBehaviour
     }
     void PointUpdate()
     {
-        if (NowFrame < 600)
+        if (NowFrame < Data_Size)
         {
-            StreamReader fi = new StreamReader(Application.dataPath + Data_Path + NowFrame.ToString() + ".txt");
+            StreamReader fi = new StreamReader(Application.dataPath + Data_Path + File_Name + NowFrame.ToString() + ".txt");
             NowFrame++;
             string all = fi.ReadToEnd();
             if (all != "0")
@@ -113,7 +113,7 @@ public class BoneController : MonoBehaviour
             }
             else
             {
-                Debug.Log("No data");
+                Debug.Log("All Data 0");
             }
         }
     }
@@ -169,7 +169,7 @@ public class BoneController : MonoBehaviour
         }
         for (int i = 0; i < 12; i++)
         {
-            DrawRay(points[BoneJoint[i, 0]] * 0.001f + new Vector3(1, 0.8f, 0), NormalizeBone[i] * 0.1f, Color.green);
+            DrawRay(points[BoneJoint[i, 0]] * 0.001f + new Vector3(1, 0.8f, 0), NormalizeBone[i] * 0.25f, Color.green);
         }
     }
     void DrawLine(Vector3 s, Vector3 e, Color c)
@@ -183,5 +183,21 @@ public class BoneController : MonoBehaviour
 }
 enum PointsNum
 {
-    Hips, RightUpperLeg, RightLowerLeg, RightFoot, LeftUpperLeg, LeftLowerLeg, LeftFoot, Spine, Chest, Neck, Head, LeftUpperArm, LeftLowerArm, LeftHand, RightUpperArm, RightLowerArm, RightHand
+    Hips,
+    RightUpperLeg,
+    RightLowerLeg,
+    RightFoot,
+    LeftUpperLeg,
+    LeftLowerLeg,
+    LeftFoot,
+    Spine,
+    Chest,
+    Neck,
+    Head,
+    LeftUpperArm,
+    LeftLowerArm,
+    LeftHand,
+    RightUpperArm,
+    RightLowerArm,
+    RightHand
 }
