@@ -3,6 +3,8 @@ tf-openpose and unity IK
 
 this Unity project read tf-openpose data and move avators with IK or humanoid bones
 
+[![](https://img.youtube.com/vi/VJkKxBRpmtE/0.jpg)](https://www.youtube.com/watch?v=VJkKxBRpmtE)
+
 # How to Use
 Just play Unity editor.
 Now, Unity-chan moves according to posture information data.
@@ -53,6 +55,7 @@ Required components
 
 Data must be named ./Assets/(Data_Path)/(FileName)+(numbers starting from 0).txt
 ![DataStructure](https://github.com/keel-210/OpenPose-Rig/blob/Images/data_structure.png)
+
 
 
 More Info : https://qiita.com/keel/items/0d64167850566586d22a
