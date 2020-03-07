@@ -3,6 +3,8 @@ tf-openpose and unity IK
 
 this Unity project read tf-openpose data and move avators with IK or humanoid bones
 
+YouTube
+
 [![](https://img.youtube.com/vi/VJkKxBRpmtE/0.jpg)](https://www.youtube.com/watch?v=VJkKxBRpmtE)
 
 # How to Use
