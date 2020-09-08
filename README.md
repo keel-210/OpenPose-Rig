@@ -1,4 +1,10 @@
 # OpenPose-Rig
+# **❗DON'T USE THIS PROJECT❗**
+
+# **❗THIS PROJECT IS NO LONGER UPDATED❗**
+
+# **❗USE OFFICIAL tf-openpose UNITY SUPPORT❗**
+
 tf-openpose and unity IK
 
 this Unity project read tf-openpose data and move avators with IK or humanoid bones
